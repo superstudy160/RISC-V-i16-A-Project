@@ -1,7 +1,12 @@
 # HDL-RISC-V-i16-A-Project
 
+[![](https://user-images.githubusercontent.com/88595269/128730771-560da5b6-f33b-410c-bc03-2dc68f2c748e.png)](https://github.com/MKrekker/SINGLE-CYCLE-RISC-V)
+
 
 # Useful stuff
+
+## 0. Realising Verilog files
+https://digitaljs.tilk.eu
 
 ## 1. Compiling script:
 ```shell
