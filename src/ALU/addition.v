@@ -3,7 +3,8 @@ module FullAdderSigned16bit (
     input [15:0] B,
     input Cin,
     output [15:0] S,
-    output Cout
+    output Cout,
+    output Overflow
 );
 wire [15:0] Sum;
 wire [15:0] Cout_temp;
@@ -24,5 +25,6 @@ endgenerate
 
 assign S = Sum;
 assign Cout = Cout_temp[15];
+assign Overflow = Cout_temp[14] ^ Cout_temp[15]; // this code works somehow, at least the possibilities I have tested
 
 endmodule
