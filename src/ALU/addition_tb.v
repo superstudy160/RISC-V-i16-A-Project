@@ -1,15 +1,15 @@
 `include "./addition.v"
 
 // This was generated using Copilot
-module FullAdderSigned16bit_Testbench();
+module FullAdderSigned16bit_Testbench #(parameter l=16) ();
 
-    // Inputs
-    reg [15:0] a, b;
-    wire [15:0] sum;
+    parameter lv = l-1;
+
+    reg [lv:0] a, b;
+    wire [lv:0] sum;
     wire cout;
     wire overflow;
 
-    // Instantiate the Unit Under Test (UUT)
     FullAdderSigned16bit uut (
         .A(a), 
         .B(b),
