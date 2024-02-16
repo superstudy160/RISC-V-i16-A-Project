@@ -26,8 +26,7 @@ wire [l:0] Cout_temp;
 assign Cout_temp[0] = Cin;
 
 // Remaining bits
-genvar i;
-generate
+generate genvar i;
     //                                     |-> Why you do this?
     for (i = 0; i <= lv; i = i + 1) begin : gen_adders
         Adder adder(A[i], B[i], Cout_temp[i], Sum[i], Cout_temp[i+1]);
