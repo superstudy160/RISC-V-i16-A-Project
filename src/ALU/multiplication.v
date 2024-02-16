@@ -7,9 +7,15 @@
 // https://watermark.silverchair.com/020085_1_online.pdfhttps://pubs.aip.org/aip/acp/article-pdf/doi/10.1063/1.5080898/14172964/020085_1_online.pdf
 // https://ietresearch.onlinelibrary.wiley.com/doi/full/10.1049/iet-cds.2019.0537
 
-module multiplication (
-    input [0:15] M1,
-    input [0:15] M2
+module Multiplication #(parameter l=16) (
+    input [lv:0] A,
+    input [lv:0] B,
+    output reg [lv:0] R,
+    output reg Overflow
 );
+
+parameter lv = l-1;
+
+// TODO: Implement the multiplication
     
 endmodule
