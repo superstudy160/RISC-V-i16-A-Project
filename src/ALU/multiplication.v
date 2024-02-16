@@ -15,7 +15,16 @@ module Multiplication #(parameter l=16) (
 );
 
 parameter lv = l-1;
+parameter N = lv-1
+
 
 // TODO: Implement the multiplication
-    
+generate genvar i
+    for ( i = 0; i <;= N; i = i + 1) begin: gen_i
+            FullAdderSigned full_adder_signed(
+                .A(A[i][15:i]), .B(B[i]), S(R), .Overflow(Overflow)
+            );
+        end
+  
+endgenerate
 endmodule
