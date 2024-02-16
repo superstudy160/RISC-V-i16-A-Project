@@ -3,7 +3,7 @@ module Division #(parameter l=16) (
     input [lv:0] B,
     output [lv:0] Quotient,
     output [lv:0] Remainder,
-    output reg DivByZero
+    output DivByZero
 );
 
 parameter lv = l-1;

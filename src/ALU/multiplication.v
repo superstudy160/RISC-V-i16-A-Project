@@ -10,8 +10,8 @@
 module Multiplication #(parameter l=16) (
     input [lv:0] A,
     input [lv:0] B,
-    output reg [lv:0] R,
-    output reg Overflow
+    output [lv:0] R,
+    output Overflow
 );
 
 parameter lv = l-1;
