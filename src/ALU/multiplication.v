@@ -10,32 +10,32 @@
 // https://ietresearch.onlinelibrary.wiley.com/doi/full/10.1049/iet-cds.2019.0537
 
 module ControlledAdder(
-    input A,
-    input B,
-    input Cin,
-    input Selection, // 1 for addition, 0 to skip
-    output Sum,
-    output Cout
+	input A,
+	input B,
+	input Cin,
+	input Selection, // 1 for addition, 0 to skip
+	output Sum,
+	output Cout
 );
 
 wire b_buff;
 assign b_buff = Selection & B;
 
 Adder adder(
-    .A(A), .B(b_buff), .Cin(Cin),
-    .S(Sum), .Cout(Cout)
+	.A(A), .B(b_buff), .Cin(Cin),
+	.S(Sum), .Cout(Cout)
 );
-    
+	
 endmodule //ControlledAdder
 
 
 module ControlledFullAdder #(parameter l=16) (
-    input [lv:0] A,
-    input [lv:0] B,
-    input [lv:0] Cin,
-    input Selection,
-    output [lv:0] Sum,
-    output [lv:0] Cout
+	input [lv:0] A,
+	input [lv:0] B,
+	input [lv:0] Cin,
+	input Selection,
+	output [lv:0] Sum,
+	output [lv:0] Cout
 );
 
 parameter lv = l-1;
@@ -44,11 +44,11 @@ generate
 genvar i;
 
 for (i = 0; i < l; i = i + 1)
-    ControlledAdder controlled_adder(
-        .A(A[i]), .B(B[i]), .Cin(Cin[i]),
-        .Selection(Selection), .Sum(Sum[i]),
-        .Cout(Cout[i]) // This carry would go to the next ControlledFullAdder
-    );
+	ControlledAdder controlled_adder(
+		.A(A[i]), .B(B[i]), .Cin(Cin[i]),
+		.Selection(Selection), .Sum(Sum[i]),
+		.Cout(Cout[i]) // This carry would go to the next ControlledFullAdder
+	);
 
 endgenerate
 endmodule //ControlledFullAdder
@@ -58,10 +58,10 @@ endmodule //ControlledFullAdder
 // Source:
 // https://coertvonk.com/hw/building-math-circuits/faster-parameterized-multiplier-in-verilog-30774
 module Multiplication #(parameter l=16) (
-    input [lv:0] A,
-    input [lv:0] B,
-    output [lv:0] R1,
-    output [lv:0] R2
+	input [lv:0] A,
+	input [lv:0] B,
+	output [lv:0] R1,
+	output [lv:0] R2
 );
 
 parameter lv = l-1;
@@ -76,26 +76,26 @@ generate
 genvar i;
 
 for (i = 0; i < l; i = i + 1) begin
-    ControlledFullAdder #(l) controlled_full_adder(
-        .A({1'b0, Sum[i][lv:1]}),
-        .B(A), // We selectively add A or not
-        .Cin(Carry[i]),
-        .Selection(B[i]),
-        
-        .Sum(Sum[i+1]),
-        .Cout(Carry[i+1])
-    );
-    assign R1[i] = Sum[i+1][0];
+	ControlledFullAdder #(l) controlled_full_adder(
+		.A({1'b0, Sum[i][lv:1]}),
+		.B(A), // We selectively add A or not
+		.Cin(Carry[i]),
+		.Selection(B[i]),
+		
+		.Sum(Sum[i+1]),
+		.Cout(Carry[i+1])
+	);
+	assign R1[i] = Sum[i+1][0];
 end
 endgenerate
 
 // Resolving lefout carries
 wire [lv:0] ignore;
 FullAdder #(l) full_adder(
-    .A({1'b0, Sum[l][lv:1]}),
-    .B(Carry[l]), .Cin(1'b0),
+	.A({1'b0, Sum[l][lv:1]}),
+	.B(Carry[l]), .Cin(1'b0),
 
-    .S(R2), .Cout(ignore)
+	.S(R2), .Cout(ignore)
 );
 
 endmodule

@@ -1,5 +1,5 @@
 module RISCV(
-    input clk
+	input clk
 );
-    
+	
 endmodule //RISCV
