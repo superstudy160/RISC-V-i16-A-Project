@@ -1,5 +1,5 @@
 // https://www.geeksforgeeks.org/full-subtractor-in-digital-logic/
-module Subtract(
+module Subtractor(
     input A, // Minuend
     input B, // Subtrahend
     input Bin, // Borrow in
@@ -10,11 +10,11 @@ module Subtract(
 assign D = A ^ B ^ Bin;
 assign Bout = (~A & B) | ((~(A ^ B)) & Bin);
     
-endmodule //Subtract
+endmodule //Subtractor
 
 
 // A - B
-module ControlledSubtract(
+module ControlledSubtractor(
     input A, // Minuend
     input B, // Subtrahend
     input Bin, // Borrow in
@@ -25,19 +25,19 @@ module ControlledSubtract(
 
 wire d_buff;
 
-Subtract subtractor(
+Subtractor subtractor(
     .A(A), .B(B), .Bin(Bin),
     .D(d_buff), .Bout(Bout)
 );
 
 assign D = Selection ? A : d_buff;
 
-endmodule //ControlledSubtract
+endmodule //ControlledSubtractor
 
 
 // Source:
 // https://coertvonk.com/hw/building-math-circuits/parameterized-divider-in-verilog-30776
-module FullControlledSubtract #(parameter l=16) (
+module FullControlledSubtractor #(parameter l=16) (
     input [l:0] A, // Minuend (Last bit without substractend (needed for borrow))
     input [lv:0] B, // Subtrahend
     output [l:0] D, // Difference
@@ -53,7 +53,7 @@ assign Subtracted = ~Borrow[l+1]; // Don't need to borrow => do subtraction
 generate
 genvar i;
 
-for (i = 0; i <= l; i = i + 1) begin : gen_subtractors
+for (i = 0; i <= l; i = i + 1) begin
     wire b_buff;
     if (i < l) assign b_buff = B[i];
     else assign b_buff = 1'b0;
@@ -61,7 +61,7 @@ for (i = 0; i <= l; i = i + 1) begin : gen_subtractors
     wire d_buff;
     if (i < l) assign D[i] = d_buff;
 
-    ControlledSubtract subtractor(
+    ControlledSubtractor subtractor(
         .A(A[i]), .B(b_buff),
         .Bin(Borrow[i]),
         .Selection(~Subtracted),
@@ -71,7 +71,7 @@ for (i = 0; i <= l; i = i + 1) begin : gen_subtractors
     );
 end
 endgenerate
-endmodule //FullControlledSubtract
+endmodule //FullControlledSubtractor
 
 
 module Division #(parameter l=16) (
@@ -99,7 +99,7 @@ for (i = 0; i < l; i = i + 1) begin
     if (i > 0) assign a_buff[l:1] = Difference[i-1];
     else assign a_buff[l:1] = {l{1'b0}};
 
-    FullControlledSubtract #(l) subtractor(
+    FullControlledSubtractor #(l) subtractor(
         .A(a_buff), .B(B),
         .D(Difference[i]),
         .Subtracted(Quotient[lv-i])
