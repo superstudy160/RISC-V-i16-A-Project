@@ -112,3 +112,16 @@ assign DivByZero = ~is_zero[l];
 
 endgenerate
 endmodule //Division
+
+
+module SignedDivision #(parameter l=16)(
+    input [lv:0] A,
+    input [lv:0] B,
+    output [lv:0] Quotient,
+    output [lv:0] Remainder,
+    output DivByZero
+);
+    
+    // TODO: Implement the signed division
+
+endmodule //SignedDivision 
