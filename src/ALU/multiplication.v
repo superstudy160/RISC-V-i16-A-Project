@@ -57,6 +57,10 @@ endmodule //ControlledFullAdder
 
 // Source:
 // https://coertvonk.com/hw/building-math-circuits/faster-parameterized-multiplier-in-verilog-30774
+// Furher improvement, if there is time:
+// https://coertvonk.com/hw/building-math-circuits/faster-parameterized-multiplier-in-verilog-30774#:~:text=The%20Wallace%20Multiplier,nanoseconds%20%5Bref%5D.
+// https://zipcpu.com/zipcpu/2021/07/03/slowmpy.html
+// https://github.com/SubZer0811/VLSI/blob/master/verilog/32bit-wallace-multiplier/wallace.v
 module Multiplication #(parameter l=16) (
 	input [lv:0] A,
 	input [lv:0] B,
@@ -99,3 +103,18 @@ FullAdder #(l) full_adder(
 );
 
 endmodule
+
+
+module SignedMultiplication #(parameter l=16) (
+	input [lv:0] A,
+	input [lv:0] B,
+	output [lv:0] R1,
+	output [lv:0] R2
+);
+
+parameter lv = l-1;
+
+// TODO: Implement the signed multiplication
+// (just handle the sign bit and then call the unsigned multiplication)
+	
+endmodule //SignedMultiplication

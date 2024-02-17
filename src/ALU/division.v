@@ -37,6 +37,12 @@ endmodule //ControlledSubtractor
 
 // Source:
 // https://coertvonk.com/hw/building-math-circuits/parameterized-divider-in-verilog-30776
+// In theory, this article should describe the way to improve our algorithm
+// https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=8145c053ed44bea2b2ce4a9f7051c7cde727cd3f
+// https://www.researchgate.net/publication/4156467_A_hardware_algorithm_for_integer_division
+// Another nice source:
+// https://en.algorithmica.org/hpc/arithmetic/division/
+// https://doc.lagout.org/security/Hackers%20Delight.pdf
 module FullControlledSubtractor #(parameter l=16) (
 	input [l:0] A, // Minuend (Last bit without substractend (needed for borrow))
 	input [lv:0] B, // Subtrahend
@@ -126,5 +132,6 @@ module SignedDivision #(parameter l=16)(
 parameter lv = l-1;
 	
 // TODO: Implement the signed division
+// (just handle the sign bit and use the unsigned division)
 
 endmodule //SignedDivision 
