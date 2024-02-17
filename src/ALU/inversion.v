@@ -1,34 +1,48 @@
-module inversion (
-	input [0:15] A,
-	input [0:15] B,
-	output [0:15] A1,
-	output [0:15] B1,
-	output wire neg
+`include "./addition.v"
+
+/* This module would work in both directions:
+General formula: -a = ~a + 1
+Consider --a = -(~a + 1) = ~(~a + 1) + 1 = 
+	= ~(~a + 1) + ~a + 1 - ~a = 
+	= ~x + x - ~a = 
+	= M + (~~a + 1) = 
+	= M + 1 + a =
+	= a.
+Where M is all ones.
+*/
+module Inverter #(parameter l=16) (
+	input [lv:0] A,
+	output [lv:0] R
 );
-reg [15:0] same = 16'b0;
-reg [15:0] reverse = 16'b1;
-always @(A) begin
-	case(A)
-	1'b0 : begin
-		A1 = A ^ same;
-		neg = 1'b0 ;
-	end  
-	1'b1 : begin
-		A1 = A ^ reverse;
-		neg = 1'b1 ;
-	end  
-	
-end
-always @(B) begin
-	case(B)
-	1'b0 : begin
-		B1 = B ^ same;
-		neg = 1'b0 ;
-	end  
-	 
-	1'b1 : begin
-		B1 = B ^ reverse;
-		neg = 1'b0 ;
-	end  
-end
+
+parameter lv = l-1;
+
+wire [lv-1:0] ignore;
+FullAdder #(l-1) full_adder(
+	.A(~A[lv-1:0]),
+	.B({l-1{1'b0}}),
+	.Cin(1'b1),
+
+	.S(R[lv-1:0]),
+	.Cout(ignore)
+);
+
+assign R[lv] = ~A[lv];
+
+endmodule
+
+module AbsoluteValue #(parameter l=16) (
+	input [lv:0] A,
+	output [lv:0] R
+);
+
+parameter lv = l-1;
+
+wire [lv:0] inv;
+Inverter #(l) inverter(
+	.A(A), .R(inv)
+);
+
+assign R = A[lv] ? inv : A;
+
 endmodule
