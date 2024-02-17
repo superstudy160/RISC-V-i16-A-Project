@@ -99,9 +99,10 @@ for (i = 0; i < l; i = i + 1) begin
     if (i > 0) assign a_buff[l:1] = Difference[i-1];
     else assign a_buff[l:1] = {l{1'b0}};
 
+    wire ignore;
     FullControlledSubtractor #(l) subtractor(
         .A(a_buff), .B(B),
-        .D(Difference[i]),
+        .D({ignore, Difference[i]}),
         .Subtracted(Quotient[lv-i])
     );
 end
@@ -121,7 +122,9 @@ module SignedDivision #(parameter l=16)(
     output [lv:0] Remainder,
     output DivByZero
 );
+
+parameter lv = l-1;
     
-    // TODO: Implement the signed division
+// TODO: Implement the signed division
 
 endmodule //SignedDivision 
