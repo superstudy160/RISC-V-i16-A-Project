@@ -1,43 +1,36 @@
 `include "./multiplication.v"
 
 // This was generated using Copilot
-module Multiplication_Testbench #(parameter l=16) ();
+module Multiplication_Testbench ();
 
-    parameter lv = l-1;
+    reg [15:0] A;
+    reg [15:0] B;
+    wire [15:0] R1, R2;
 
-    reg [lv:0] a, b;
-    wire [lv:0] R;
-    wire overflow;
-
-    multiplication #(l) uut (
-        .A(a), 
-        .B(b),
-        .S(R),
-        .Overflow(overflow)
+    parameter l = 3;
+    Multiplication #(l) multiplication(
+        .A(A[l-1:0]),
+        .B(B[l-1:0]),
+        .R1(R1[l-1:0]),
+        .R2(R2[l-1:0])
     );
-    
+    assign R1[15:l] = 0;
+    assign R2[15:l] = 0;
+
     initial begin
-        $monitor("  a=%b\n  b=%b\nR=%b, o=%b\n\n", a, b, R, overflow);
-        a = 16'b0000000000000000;
-        b = 16'b0000000000000000;
+        $monitor("A=%d,\nB=%d\nR1=%d * 8 + %d", A, B, R2, R1);
+        A = 16'd2;
+        B = 16'd3;
         #10;
-        a = 16'b0000000000000001;
-        b = 16'b0000000000000001;
+        A = 16'd3;
+        B = 16'd4;
         #10;
-        a = 16'b1000000000110000;
-        b = 16'b1000000011100000;
+        A = 16'd4;
+        B = 16'd5;
         #10;
-        a = 16'b1000000000000000;
-        b = 16'b0000010000000000;
+        A = 16'd7;
+        B = 16'd7;
         #10;
-        a = 16'b0100000000000001;
-        b = 16'b0100000000000011;
-        #10;
-        a = 16'b0111111111111111;
-        b = 16'b0000000000000001;
-        #10;
-        a = 16'b1111111111111111;
-        b = 16'b0000000000000001;
     end
 
 endmodule

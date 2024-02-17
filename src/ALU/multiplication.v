@@ -80,8 +80,8 @@ for (i = 0; i < l; i = i + 1) begin
         .A({1'b0, Sum[i][lv:1]}),
         .B(A), // We selectively add A or not
         .Cin(Carry[i]),
-
         .Selection(B[i]),
+        
         .Sum(Sum[i+1]),
         .Cout(Carry[i+1])
     );
@@ -94,7 +94,7 @@ wire [lv:0] ignore;
 FullAdder #(l) full_adder(
     .A({1'b0, Sum[l][lv:1]}),
     .B(Carry[l]), .Cin(1'b0),
-    
+
     .S(R2), .Cout(ignore)
 );
 
