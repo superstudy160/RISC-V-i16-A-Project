@@ -12,6 +12,7 @@ assign Bout = (~A & B) | ((~(A ^ B)) & Bin);
     
 endmodule //Subtract
 
+
 // A - B
 module ControlledSubtract(
     input A, // Minuend
@@ -33,46 +34,81 @@ assign D = Selection ? A : d_buff;
 
 endmodule //ControlledSubtract
 
+
+// Source:
+// https://coertvonk.com/hw/building-math-circuits/parameterized-divider-in-verilog-30776
+module FullControlledSubtract #(parameter l=16) (
+    input [l:0] A, // Minuend (Last bit without substractend (needed for borrow))
+    input [lv:0] B, // Subtrahend
+    output [l:0] D, // Difference
+    output Subtracted // 1 if the subtraction was done, 0 if it was skipped
+);
+
+parameter lv = l-1;
+
+wire Borrow [l+1:0];
+assign Borrow[0] = 1'b0; // First borrow is always 0
+assign Subtracted = ~Borrow[l+1]; // Don't need to borrow => do subtraction
+
+generate
+genvar i;
+
+for (i = 0; i <= l; i = i + 1) begin : gen_subtractors
+    wire b_buff;
+    if (i < l) assign b_buff = B[i];
+    else assign b_buff = 1'b0;
+
+    wire d_buff;
+    if (i < l) assign D[i] = d_buff;
+
+    ControlledSubtract subtractor(
+        .A(A[i]), .B(b_buff),
+        .Bin(Borrow[i]),
+        .Selection(~Subtracted),
+
+        .D(d_buff),
+        .Bout(Borrow[i+1])
+    );
+end
+endgenerate
+endmodule //FullControlledSubtract
+
+
 module Division #(parameter l=16) (
     input [lv:0] A,
     input [lv:0] B,
     output [lv:0] Quotient,
-    output [l:0] Remainder,
+    output [lv:0] Remainder,
     output DivByZero
 );
 
 parameter lv = l-1;
 
-wire [l:0] Difference [lv:0];
-wire [l:0] Borrow [lv:0];
+wire [lv:0] Difference [lv:0];
+assign Remainder = Difference[lv];
+
+wire [l:0] is_zero;
+assign is_zero[0] = 1'b0;
 
 generate
-genvar i, j;
+genvar i;
 
-for (i = 0; i < l; i = i + 1) begin // <- depth of the division
-    //            |-> We are doing one more cycle to put down next bit
-    for(j = 0; j <= l; j = j + 1) begin
-        ControlledSubtract controlled_subtractor(
-            .A(
-                (j == 0) ? A[lv-i] :  // Putting down the next bit
-                (i > 0) ? Difference[i-1][j-1] : // Propagating the previous bits
-                1'b0 // Zero padding otheriwse
-            ),
-            .B(j < l ? B[j] : 1'b0), // Last bit without substractend (needed for borrow)
-            .Bin(j == 0 ? 1'b0 : Borrow[i][j-1]), // First borrow is always 0
-            .Selection(Borrow[i][l]), // Don't need to borrow => do subtraction
+for (i = 0; i < l; i = i + 1) begin
+    wire [l:0] a_buff;
+    assign a_buff[0] = A[lv-i];
+    if (i > 0) assign a_buff[l:1] = Difference[i-1];
+    else assign a_buff[l:1] = {l{1'b0}};
 
-            .D(Difference[i][j]),
-            .Bout(Borrow[i][j])
-        );
-    end
+    FullControlledSubtract #(l) subtractor(
+        .A(a_buff), .B(B),
+        .D(Difference[i]),
+        .Subtracted(Quotient[lv-i])
+    );
 end
 
 for (i = 0; i < l; i = i + 1)
-    assign Quotient[i] = ~Borrow[i][lv-i];
-
-assign Remainder = Difference[lv];
+    assign is_zero[i+1] = is_zero[i] | B[i];
+assign DivByZero = ~is_zero[l];
 
 endgenerate
-    
 endmodule //Division
