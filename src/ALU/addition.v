@@ -38,11 +38,21 @@ assign Cout[lv:0] = Cout_temp[l:1];
 
 endmodule //FullAdder
 
-module FullAdderSigned #(parameter l = 16) (
+
+/* https://teaching.idallen.com/dat2343/10f/notes/040_overflow.txt
+In unsigned arithmetic, watch the carry flag to detect errors.
+In unsigned arithmetic, the overflow flag tells you nothing interesting.
+
+In signed arithmetic, watch the overflow flag to detect errors.
+In signed arithmetic, the carry flag tells you nothing interesting.
+*/
+// This addition algorithm works both for signed and unsigned numbers (2's complement)
+module FullAdderFlags #(parameter l = 16) (
     input [lv:0] A,
     input [lv:0] B,
     output [lv:0] S,
-    output Overflow
+    output Overflow,
+    output Carry
 );
 
 parameter lv = l-1;
@@ -55,5 +65,6 @@ FullAdder #(l) full_adder (
 );
 
 assign Overflow = Cout[lv-1] ^ Cout[lv]; // this code works somehow, at least the possibilities I have tested
+assign Carry = Cout[lv];
 
-endmodule
+endmodule // FullAdderFlags

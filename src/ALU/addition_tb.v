@@ -7,17 +7,18 @@ module FullAdderSigned_Testbench #(parameter l=16) ();
 
     reg [lv:0] a, b;
     wire [lv:0] sum;
-    wire overflow;
+    wire overflow, carry;
 
-    FullAdderSigned #(l) uut (
+    FullAdderFlags #(l) uut (
         .A(a), 
         .B(b),
         .S(sum),
-        .Overflow(overflow)
+        .Overflow(overflow),
+        .Carry(carry)
     );
     
     initial begin
-        $monitor("  a=%b\n  b=%b\nsum=%b, o=%b\n\n", a, b, sum, overflow);
+        $monitor("  a=%b\n  b=%b\nsum=%b, o=%b, c=%b\n\n", a, b, sum, overflow, carry);
         a = 16'b0000000000000000;
         b = 16'b0000000000000000;
         #10;
