@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-module GPRs(
+module RegisterFile(
  input    clk,
  // write port
  input    reg_write_en,
