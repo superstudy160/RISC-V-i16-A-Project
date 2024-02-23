@@ -33,7 +33,7 @@ module ControlledFullAdder #(parameter l=16) (
 	input [lv:0] A,
 	input [lv:0] B,
 	input [lv:0] Cin,
-	input Selection,
+	input Selection, // 1 for addition, 0 to skip
 	output [lv:0] Sum,
 	output [lv:0] Cout
 );
@@ -64,8 +64,7 @@ endmodule //ControlledFullAdder
 module Multiplication #(parameter l=16) (
 	input [lv:0] A,
 	input [lv:0] B,
-	output [lv:0] R1,
-	output [lv:0] R2
+	output [lv:0] R1
 );
 
 parameter lv = l-1;
@@ -80,16 +79,18 @@ generate
 genvar i;
 
 for (i = 0; i < l; i = i + 1) begin
+	// We are adding A to 0 B times
 	ControlledFullAdder #(l) controlled_full_adder(
-		.A({1'b0, Sum[i][lv:1]}),
-		.B(A), // We selectively add A or not
-		.Cin(Carry[i]),
-		.Selection(B[i]),
+		.A({1'b0, Sum[i][lv:1]}), // The previous sum (at index i)
+		.B(A),
+		.Cin(Carry[i]), // The previous carry (at index i)
+		.Selection(B[i]), // For each bit of B, we add currently shifted A only if that bit is 1
 		
-		.Sum(Sum[i+1]),
-		.Cout(Carry[i+1])
+		.Sum(Sum[i+1]), // Current sum value (at index i+1)
+		.Cout(Carry[i+1]) // Current carry value (at index i+1)
 	);
-	assign R1[i] = Sum[i+1][0];
+	assign R1[i] = Sum[i+1][0]; // At this point, the last bit of the sum would never change afterwards
+								//   , thus can already be put in the output
 end
 endgenerate
 
