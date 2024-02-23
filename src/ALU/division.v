@@ -120,18 +120,4 @@ assign DivByZero = ~is_zero[l];
 endgenerate
 endmodule //Division
 
-
-module SignedDivision #(parameter l=16)(
-	input [lv:0] A,
-	input [lv:0] B,
-	output [lv:0] Quotient,
-	output [lv:0] Remainder,
-	output DivByZero
-);
-
-parameter lv = l-1;
-	
-// TODO: Implement the signed division
-// (just handle the sign bit and use the unsigned division)
-
-endmodule //SignedDivision 
+// Signed versions of the oprations should be implemented in the ALU module

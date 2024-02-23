@@ -105,17 +105,4 @@ assign Overflow = carry_aggregate[lv];
 
 endmodule
 
-
-module SignedMultiplication #(parameter l=16) (
-	input [lv:0] A,
-	input [lv:0] B,
-	output [lv:0] R1,
-	output [lv:0] R2
-);
-
-parameter lv = l-1;
-
-// TODO: Implement the signed multiplication
-// (just handle the sign bit and then call the unsigned multiplication)
-	
-endmodule //SignedMultiplication
+// Signed versions of the oprations should be implemented in the ALU module
