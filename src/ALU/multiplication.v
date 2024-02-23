@@ -64,7 +64,8 @@ endmodule //ControlledFullAdder
 module Multiplication #(parameter l=16) (
 	input [lv:0] A,
 	input [lv:0] B,
-	output [lv:0] R1
+	output [lv:0] R1,
+	output Overflow
 );
 
 parameter lv = l-1;
@@ -75,33 +76,32 @@ assign Carry[0] = {l{1'b0}};
 wire [lv:0] Sum [l:0];
 assign Sum[0] = {l{1'b0}};
 
+wire [lv:0] carry_aggregate;
+assign carry_aggregate[0] = 0;
+
 generate
 genvar i;
 
 for (i = 0; i < l; i = i + 1) begin
 	// We are adding A to 0 B times
-	ControlledFullAdder #(l) controlled_full_adder(
-		.A({1'b0, Sum[i][lv:1]}), // The previous sum (at index i)
-		.B(A),
-		.Cin(Carry[i]), // The previous carry (at index i)
+	ControlledFullAdder #(l-i) controlled_full_adder(
+		.A(Sum[i][lv:i]), // The previous sum (at index i)
+		.B(A[lv-i:0]),
+		.Cin(Carry[i][lv-i:0]), // The previous carry (at index i)
 		.Selection(B[i]), // For each bit of B, we add currently shifted A only if that bit is 1
 		
-		.Sum(Sum[i+1]), // Current sum value (at index i+1)
-		.Cout(Carry[i+1]) // Current carry value (at index i+1)
+		.Sum(Sum[i+1][lv:i]), // Current sum value (at index i+1)
+		.Cout(Carry[i+1][lv-i:0]) // Current carry value (at index i+1)
 	);
-	assign R1[i] = Sum[i+1][0]; // At this point, the last bit of the sum would never change afterwards
+	assign R1[i] = Sum[i+1][i]; // At this point, the last bit of the sum would never change afterwards
 								//   , thus can already be put in the output
+
+	if (i >= 1) // Checking if any of the carries are 1
+		assign carry_aggregate[i] = carry_aggregate[i-1] | Carry[i+1][lv-i];
 end
 endgenerate
 
-// Resolving lefout carries
-wire [lv:0] ignore;
-FullAdder #(l) full_adder(
-	.A({1'b0, Sum[l][lv:1]}),
-	.B(Carry[l]), .Cin(1'b0),
-
-	.S(R2), .Cout(ignore)
-);
+assign Overflow = carry_aggregate[lv];
 
 endmodule
 
