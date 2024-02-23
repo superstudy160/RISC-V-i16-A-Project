@@ -2,6 +2,16 @@
 
 [![](https://user-images.githubusercontent.com/88595269/128730771-560da5b6-f33b-410c-bc03-2dc68f2c748e.png)](https://github.com/MKrekker/SINGLE-CYCLE-RISC-V)
 
+# Architecture reference
+## `Flags` register reference
+|Index|Description|
+|-|-|
+|`0`|Multiplication overflow|
+|`1`|Division has remainder|
+|`2`|Division by zero|
+
+## [Instruction bits reference](https://user.eng.umd.edu/~blj/risc/RiSC-isa.pdf)
+
 
 # Useful stuff
 
