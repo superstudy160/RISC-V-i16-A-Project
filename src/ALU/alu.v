@@ -10,7 +10,7 @@ module ALU #(parameter l=16, parameter p=0) (
 	input [lv:0] B,
 	input [lv:0] FlagsIn,
 	output [lv:0] R,
-	output [lv:0] FlagsOut
+	output reg [lv:0] FlagsOut
 );
 
 parameter lv = l-1;
@@ -26,7 +26,25 @@ AbsoluteValue #(l) abs_b(
 	.A(B), .R(AbsB)
 );
 
-wire [lv:0] UnsignedR;
+wire DivisionHasRemainder;
+wire DivisionDivByZero;
+wire [lv:0] DivisionR;
+Division #(l) divider(
+	.A(AbsA), .B(AbsB),
+	.Quotient(DivisionR),
+	.HasRemainder(DivisionHasRemainder),
+	.DivByZero(DivisionDivByZero)
+);
+
+wire MultiplicationOverflow;
+wire [lv:0] MultiplicationR;
+Multiplication #(l) multiplier(
+	.A(AbsA), .B(AbsB),
+	.R1(MultiplicationR),
+	.Overflow(MultiplicationOverflow)
+);
+
+reg [lv:0] UnsignedR;
 GiveSign #(l) give_sign(
 	.Sign(A[lv] ^ B[lv]),
 	.A(UnsignedR),
@@ -37,27 +55,25 @@ always @(*) begin
 	case (Operation)
 		0: begin
 			// Division
-			Division #(l) divider(
-				.A(AbsA), .B(AbsB),
-				.Quotient(UnsignedR),
-				.HasRemainder(FlagsOut[DivisionHasRemainderIdx[lv:0]]),
-				.DivByZero(FlagsOut[DivisionByZeroIdx[lv:0]])
-			);
+			UnsignedR = DivisionR;
+			FlagsOut[DivisionHasRemainderIdx[lv:0]] = DivisionHasRemainder;
+			FlagsOut[DivisionByZeroIdx[lv:0]] = DivisionDivByZero;
 			FlagsOut[MultiplicationOverflowIdx[lv:0]] = FlagsIn[MultiplicationOverflowIdx[lv:0]];
 		end
+
 		1: begin
 			// Multiplication
-			Multiplication #(l) multiplier(
-				.A(AbsA), .B(AbsB),
-				.R1(UnsignedR),
-				.Overflow(FlagsOut[MultiplicationOverflowIdx[lv:0]])
-			);
+			UnsignedR = MultiplicationR;
+			FlagsOut[MultiplicationOverflowIdx[lv:0]] = MultiplicationOverflow;
 			FlagsOut[DivisionHasRemainderIdx[lv:0]] = FlagsIn[DivisionHasRemainderIdx[lv:0]];
 			FlagsOut[DivisionByZeroIdx[lv:0]] = FlagsIn[DivisionByZeroIdx[lv:0]];
 		end
+
+		default:
+			FlagsOut[NoFlagsIdx[lv:0]-1:0] = FlagsIn[NoFlagsIdx[lv:0]-1:0];
 	endcase
 
-	FlagsOut[lv:ZeroIdx[lv:0]] = FlagsIn[lv:ZeroIdx[lv:0]];
+	FlagsOut[lv:NoFlagsIdx[lv:0]] = FlagsIn[lv:NoFlagsIdx[lv:0]];
 end
 
 endmodule //ALU
