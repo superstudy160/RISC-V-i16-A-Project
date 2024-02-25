@@ -34,7 +34,7 @@ FullAdder #(l) pc_incrementor(
 );
 
 always @(posedge Clk) begin
-	PC <= NextPC;
+	PC = NextPC;
 end
 
 initial PC = 0;
@@ -50,12 +50,14 @@ InstructionMemory #(l) instruction_memory(
 wire LoadUpperImmediate;
 wire [p:0] ALUOpcode;
 wire UseImmediate;
+wire UpdateFlags;
 ControlUnit #(l, op_l, p) control_unit(
 	.Opcode(Instruction[15:13]),
 
 	.LoadUpperImmediate(LoadUpperImmediate),
 	.ALUOpcode(ALUOpcode),
-	.UseImmediate(UseImmediate)
+	.UseImmediate(UseImmediate),
+	.UpdateFlags(UpdateFlags)
 );
 
 // Register file
@@ -73,6 +75,7 @@ RegisterFile #(l, a) register_file(
 		LoadUpperImmediate ? {6'b0, Instruction[9:0]} : ALUResult
 	),
 	.InNewFlags(ALUNewFlags),
+	.UpdateFlags(UpdateFlags),
 
 	.OutDataB(OutDataB),
 	.OutDataC(OutDataC),
@@ -88,7 +91,7 @@ ALU #(l, p) alu(
 	.Operation(ALUOpcode),
 	.A(OutDataB),
 	.B(UseImmediate ? 
-		{{9{Instruction[6]}}, Instruction[5:0]} :  // signed ImmediateExtend
+		{{10{Instruction[6]}}, Instruction[5:0]} :  // signed ImmediateExtend
 		OutDataC
 	),
 	.FlagsIn(OldFlags),

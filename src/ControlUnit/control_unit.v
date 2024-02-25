@@ -39,7 +39,6 @@ always @(Opcode) begin
             LoadUpperImmediate = 0;
             UpdateFlags = 1;
         end
-        // TODO: in last two cases flags shouldn't change
         // LUI
         3'b011: begin
             ALUOpcode = 0;

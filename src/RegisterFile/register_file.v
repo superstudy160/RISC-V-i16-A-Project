@@ -39,9 +39,9 @@ module RegisterFile #(parameter l=16, parameter a=3) (
 	assign OutFlags = Data[FlagsRegisterAddr[av:0]];
 
 	always @ (posedge Clk) begin
-		Data[AddrA] <= InDataA;
+		Data[AddrA] = InDataA;
 		if (UpdateFlags)
-			Data[FlagsRegisterAddr[av:0]] <= InNewFlags;
+			Data[FlagsRegisterAddr[av:0]] = InNewFlags;
 	end
 
 	generate
