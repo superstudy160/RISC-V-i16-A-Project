@@ -14,16 +14,18 @@ module ControlUnit_Testbench ();
     wire LoadUpperImmediate;
     wire [pv:0] ALUOpcode;
     wire UseImmediate;
+    wire UpdateFlags;
 
-    ContolUnit #(l, op_l, p) control_unit(
+    ControlUnit #(l, op_l, p) control_unit(
         .Opcode(Opcode),
         .LoadUpperImmediate(LoadUpperImmediate),
         .ALUOpcode(ALUOpcode),
-        .UseImmediate(UseImmediate)
+        .UseImmediate(UseImmediate),
+        .UpdateFlags(UpdateFlags)
     );
 
     initial begin
-        $monitor("LoadUpperImmediate=%d\nALUOpcode=%d\nUseImmediate=%d\n\n", LoadUpperImmediate, ALUOpcode, UseImmediate);
+        $monitor("LoadUpperImmediate=%d\nALUOpcode=%d\nUseImmediate=%d\nUpdateFlags=%d\n\n", LoadUpperImmediate, ALUOpcode, UseImmediate, UpdateFlags);
         
         $display("MUL:");
         Opcode = 3'b111;

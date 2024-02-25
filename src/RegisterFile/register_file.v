@@ -8,6 +8,7 @@ module RegisterFile #(parameter l=16, parameter a=3) (
 
 	input [lv:0] InDataA,
 	input [lv:0] InNewFlags,
+	input UpdateFlags,
 
 	output [lv:0] OutDataB,
 	output [lv:0] OutDataC,
@@ -39,7 +40,8 @@ module RegisterFile #(parameter l=16, parameter a=3) (
 
 	always @ (posedge Clk) begin
 		Data[AddrA] <= InDataA;
-		Data[FlagsRegisterAddr[av:0]] <= InNewFlags;
+		if (UpdateFlags)
+			Data[FlagsRegisterAddr[av:0]] <= InNewFlags;
 	end
 
 	generate
