@@ -1,34 +1,52 @@
 `timescale 1ns / 1ps
-module RegisterFile(
-    input    clk,
-    // write port
-    input    reg_write_en,
-    input  [2:0] reg_write_dest,
-    input  [15:0] reg_write_data,
-    //read port 1
-    input  [2:0] reg_read_addr_1,
-    output  [15:0] reg_read_data_1,
-    //read port 2
-    input  [2:0] reg_read_addr_2,
-    output  [15:0] reg_read_data_2
+module RegisterFile #(parameter l=16, parameter a=3) (
+	input Clk,
+
+	input [av:0] AddrA,
+	input [av:0] AddrB,
+	input [av:0] AddrC,
+
+	input [lv:0] InDataA,
+	input [lv:0] InNewFlags,
+
+	output [lv:0] OutDataB,
+	output [lv:0] OutDataC,
+	output [lv:0] OutFlags,
+
+	output [dv:0] DebugData
 );
-    reg [15:0] reg_array [7:0];
-    integer i;
-    // write port
-    //reg [2:0] i;
-    initial begin
-    for(i=0;i<8;i=i+1)
-      reg_array[i] <= 16'd0;
-    end
-    always @ (posedge clk ) begin
-      if(reg_write_en) begin
-        reg_array[reg_write_dest] <= reg_write_data;
-      end
-    end
- 
 
-    assign reg_read_data_1 = reg_array[reg_read_addr_1];
-    assign reg_read_data_2 = reg_array[reg_read_addr_2];
+	parameter av = a - 1; // Maximum address bit index
+  	parameter r = 1 << a; // Number of registers
+  	parameter rv = r - 1; // Maximum register index
+  	parameter lv = l - 1; // Maximum register bit index
+	parameter DebugDataWidth = l * r;
+	parameter dv = DebugDataWidth - 1; // Maximum debug data index
 
+	parameter FlagsRegisterAddr = rv;
+
+	reg [lv:0] Data [rv:0];
+
+	integer j;
+	initial begin
+		for(j = 0; j < r; j = j + 1)
+			Data[j[av:0]] = 0;
+	end
+
+	assign OutDataB = Data[AddrB];
+	assign OutDataC = Data[AddrC];
+	assign OutFlags = Data[FlagsRegisterAddr[av:0]];
+
+	always @ (posedge Clk) begin
+		Data[AddrA] <= InDataA;
+		Data[FlagsRegisterAddr[av:0]] <= InNewFlags;
+	end
+
+	generate
+		genvar i;
+		for (i = 0; i < r; i = i + 1) begin
+			assign DebugData[i * l +: l] = Data[i[av:0]];
+		end
+	endgenerate
 
 endmodule
