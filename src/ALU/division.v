@@ -84,14 +84,14 @@ module Division #(parameter l=16) (
 	input [lv:0] A,
 	input [lv:0] B,
 	output [lv:0] Quotient,
-	output [lv:0] Remainder,
+	output HasRemainder,
 	output DivByZero
 );
 
 parameter lv = l-1;
 
 wire [lv:0] Difference [lv:0];
-assign Remainder = Difference[lv];
+assign HasRemainder = |Difference[lv];
 
 wire [l:0] is_zero;
 assign is_zero[0] = 1'b0;
