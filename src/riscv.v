@@ -37,6 +37,8 @@ always @(posedge Clk) begin
 	PC <= NextPC;
 end
 
+initial PC = 0;
+
 // Instruction memory
 wire [lv:0] Instruction;
 InstructionMemory #(l) instruction_memory(
