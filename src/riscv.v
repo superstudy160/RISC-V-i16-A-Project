@@ -87,7 +87,10 @@ wire [lv:0] ALUNewFlags;
 ALU #(l, p) alu(
 	.Operation(ALUOpcode),
 	.A(OutDataB),
-	.B(UseImmediate ? {9'b0, Instruction[6:0]} : OutDataC),
+	.B(UseImmediate ? 
+		{{9{Instruction[6]}}, Instruction[5:0]} :  // signed ImmediateExtend
+		OutDataC
+	),
 	.FlagsIn(OldFlags),
 
 	.R(ALUResult),
