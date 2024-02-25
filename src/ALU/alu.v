@@ -73,8 +73,10 @@ always @(*) begin
 			FlagsOut[DivisionOverflowIdx[lv:0]] = FlagsIn[DivisionOverflowIdx[lv:0]];
 		end
 
-		default:
+		default: begin
+			UnsignedR = 0;
 			FlagsOut[NoFlagsIdx[lv:0]-1:0] = FlagsIn[NoFlagsIdx[lv:0]-1:0];
+		end
 	endcase
 
 	FlagsOut[lv:NoFlagsIdx[lv:0]] = FlagsIn[lv:NoFlagsIdx[lv:0]];

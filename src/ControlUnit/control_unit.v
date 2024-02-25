@@ -10,7 +10,7 @@ parameter op_lv = op_l-1;
 parameter pv = p-1;
 
 always @(Opcode) begin
-	case(Opcode)
+	case (Opcode)
         // MUL
         3'b111: begin
             ALUOpcode = 1;
@@ -40,6 +40,12 @@ always @(Opcode) begin
             ALUOpcode = 0;
             UseImmediate = 0;
             LoadUpperImmediate = 1;
+        end
+
+        default: begin
+            ALUOpcode = 0;
+            UseImmediate = 0;
+            LoadUpperImmediate = 0;
         end
 	endcase
 end

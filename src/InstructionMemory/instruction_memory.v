@@ -6,7 +6,7 @@ module InstructionMemory #(parameter l = 16)(
 parameter lv = l-1;
 
 always @(address) begin
-	case(address)
+	case (address)
 		// This is the contents of the instruction memory
 		00: instruction = 16'b0000000000000000;
 		01: instruction = 16'b0000000000000001;
