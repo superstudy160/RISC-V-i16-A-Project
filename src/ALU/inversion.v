@@ -18,7 +18,7 @@ parameter lv = l-1;
 wire [lv:0] ignore;
 FullAdder #(l) full_adder(
 	.A(~A[lv:0]),
-	.B(0),
+	.B({l{1'b0}}),
 	.Cin(1'b1),
 
 	.S(R[lv:0]),
