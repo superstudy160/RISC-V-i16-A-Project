@@ -1,13 +1,12 @@
-module ContolUnit #(parameter l = 16, parameter op_l = 3, parameter p = 1)(
+module ControlUnit #(parameter l = 16, parameter op_l = 3, parameter p = 0)(
 	input [op_lv:0] Opcode,
     output reg LoadUpperImmediate,
-    output reg [pv:0] ALUOpcode,
+    output reg [p:0] ALUOpcode,
     output reg UseImmediate
 );
 
 parameter lv = l-1;
 parameter op_lv = op_l-1;
-parameter pv = p-1;
 
 always @(Opcode) begin
 	case (Opcode)

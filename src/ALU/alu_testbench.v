@@ -1,4 +1,8 @@
 `include "./alu.v"
+`include "./multiplication.v"
+`include "./division.v"
+`include "./inversion.v"
+`include "./addition.v"
 
 // This was generated using Copilot
 module ALU_Testbench ();

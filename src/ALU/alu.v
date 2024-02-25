@@ -1,8 +1,3 @@
-`include "./multiplication.v"
-`include "./division.v"
-`include "./inversion.v"
-`include "./addition.v"
-
 // p - describes the depth of amount of operations
 module ALU #(parameter l=16, parameter p=0) (
 	input [p:0] Operation,
@@ -14,8 +9,11 @@ module ALU #(parameter l=16, parameter p=0) (
 );
 
 parameter lv = l-1;
-// https://stackoverflow.com/a/63209787
-`include "../flags.vh"
+parameter MultiplicationOverflowIdx = 0;
+parameter DivisionHasRemainderIdx = 1;
+parameter DivisionByZeroIdx = 2;
+parameter DivisionOverflowIdx = 3;
+parameter NoFlagsIdx = 4;
 
 wire [lv:0] AbsA;
 AbsoluteValue #(l) abs_a(
