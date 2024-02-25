@@ -1,8 +1,9 @@
 `include "./alu.v"
 
 // This was generated using Copilot
-module ALU_Testbench #(parameter l=4) ();
+module ALU_Testbench ();
 
+    parameter l = 5;
     parameter lv = l-1;
     parameter p = 0;
 
@@ -35,7 +36,7 @@ module ALU_Testbench #(parameter l=4) ();
 
         $monitor("Operation=%d\nA=%d\nB=%d\nFlags=%b\nR=%d\n\n", Operation, A, B, Flags, R);
         
-        // Testing division
+        $display("Testing division:");
         Operation = 1'd0;
         A = 16'sd6;
         B = 16'sd3;
@@ -62,7 +63,12 @@ module ALU_Testbench #(parameter l=4) ();
         B = 16'sd3;
         #10;
 
-        // Testing multiplication
+        Operation = 1'd0;
+        A = -16'sd16;
+        B = -16'sd1;
+        #10;
+
+        $display("Testing multiplication:");
         Operation = 1'd1;
         A = 16'sd2;
         B = 16'sd3;
@@ -70,17 +76,17 @@ module ALU_Testbench #(parameter l=4) ();
 
         Operation = 1'd1;
         A = 16'sd6;
-        B = 16'sd4;
+        B = 16'sd6;
         #10;
 
         Operation = 1'd1;
-        A = -16'sd8;
+        A = -16'sd16;
         B = 16'sd1;
         #10;
 
         Operation = 1'd1;
-        A = -16'sd8;
-        B = -16'sd1; // TODO: here we have an overflow, yet it is not detected
+        A = -16'sd16;
+        B = -16'sd1;
         #10;
     end
 endmodule

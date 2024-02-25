@@ -45,10 +45,12 @@ Multiplication #(l) multiplier(
 );
 
 reg [lv:0] UnsignedR;
+wire SignOverflow;
 GiveSign #(l) give_sign(
 	.Sign(A[lv] ^ B[lv]),
 	.A(UnsignedR),
-	.R(R)
+	.R(R),
+	.Overflow(SignOverflow)
 );
 
 always @(*) begin
@@ -58,15 +60,17 @@ always @(*) begin
 			UnsignedR = DivisionR;
 			FlagsOut[DivisionHasRemainderIdx[lv:0]] = DivisionHasRemainder;
 			FlagsOut[DivisionByZeroIdx[lv:0]] = DivisionDivByZero;
+			FlagsOut[DivisionOverflowIdx[lv:0]] = SignOverflow;
 			FlagsOut[MultiplicationOverflowIdx[lv:0]] = FlagsIn[MultiplicationOverflowIdx[lv:0]];
 		end
 
 		1: begin
 			// Multiplication
 			UnsignedR = MultiplicationR;
-			FlagsOut[MultiplicationOverflowIdx[lv:0]] = MultiplicationOverflow;
+			FlagsOut[MultiplicationOverflowIdx[lv:0]] = MultiplicationOverflow | SignOverflow;
 			FlagsOut[DivisionHasRemainderIdx[lv:0]] = FlagsIn[DivisionHasRemainderIdx[lv:0]];
 			FlagsOut[DivisionByZeroIdx[lv:0]] = FlagsIn[DivisionByZeroIdx[lv:0]];
+			FlagsOut[DivisionOverflowIdx[lv:0]] = FlagsIn[DivisionOverflowIdx[lv:0]];
 		end
 
 		default:
