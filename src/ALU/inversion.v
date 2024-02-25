@@ -17,20 +17,20 @@ module Inverter #(parameter l=16) (
 
 parameter lv = l-1;
 
-wire [lv-1:0] ignore;
-FullAdder #(l-1) full_adder(
-	.A(~A[lv-1:0]),
-	.B({l-1{1'b0}}),
+wire [lv:0] ignore;
+FullAdder #(l) full_adder(
+	.A(~A[lv:0]),
+	.B(0),
 	.Cin(1'b1),
 
-	.S(R[lv-1:0]),
+	.S(R[lv:0]),
 	.Cout(ignore)
 );
 
-assign R[lv] = ~A[lv];
-
 endmodule
 
+
+// Given input of size 4, the maximum output is 1000
 module AbsoluteValue #(parameter l=16) (
 	input [lv:0] A,
 	output [lv:0] R
@@ -44,5 +44,23 @@ Inverter #(l) inverter(
 );
 
 assign R = A[lv] ? inv : A;
+
+endmodule
+
+
+module GiveSign #(parameter l=16) (
+	input Sign, // 1 for negative, 0 for positive
+	input [lv:0] A,
+	output [lv:0] R
+);
+
+parameter lv = l-1;
+
+wire [lv:0] inv;
+Inverter #(l) inverter(
+	.A(A), .R(inv)
+);
+
+assign R = Sign ? inv : A;
 
 endmodule
