@@ -1,5 +1,3 @@
-`include "./addition.v"
-
 // Suggestions for this stuff:
 // https://en.wikipedia.org/wiki/Booth%27s_multiplication_algorithm
 // http://vlsiip.com/download/booth.pdf

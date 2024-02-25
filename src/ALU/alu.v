@@ -1,6 +1,7 @@
 `include "./multiplication.v"
 `include "./division.v"
 `include "./inversion.v"
+`include "./addition.v"
 
 // p - describes the depth of amount of operations
 module ALU #(parameter l=16, parameter p=0) (

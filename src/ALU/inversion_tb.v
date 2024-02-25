@@ -1,4 +1,5 @@
 `include "./inversion.v"
+`include "./addition.v"
 
 module Inverter_Testbench ();
 

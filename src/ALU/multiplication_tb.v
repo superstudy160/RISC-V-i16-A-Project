@@ -1,4 +1,5 @@
 `include "./multiplication.v"
+`include "./addition.v"
 
 // This was generated using Copilot
 module Multiplication_Testbench ();

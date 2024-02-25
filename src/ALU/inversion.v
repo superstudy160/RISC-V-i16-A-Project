@@ -1,5 +1,3 @@
-`include "./addition.v"
-
 /* This module would work in both directions:
 General formula: -a = ~a + 1
 Consider --a = -(~a + 1) = ~(~a + 1) + 1 = 
