@@ -8,19 +8,19 @@
 // https://ietresearch.onlinelibrary.wiley.com/doi/full/10.1049/iet-cds.2019.0537
 
 module ControlledAdder(
-	input A,
-	input B,
+	input X,
+	input Y,
 	input Cin,
 	input Selection, // 1 for addition, 0 to skip
 	output Sum,
 	output Cout
 );
 
-wire b_buff;
-assign b_buff = Selection & B;
+wire y_buff;
+assign y_buff = Selection & Y;
 
 Adder adder(
-	.A(A), .B(b_buff), .Cin(Cin),
+	.X(X), .Y(y_buff), .Cin(Cin),
 	.S(Sum), .Cout(Cout)
 );
 	
@@ -28,8 +28,8 @@ endmodule //ControlledAdder
 
 
 module ControlledFullAdder #(parameter l=16) (
-	input [lv:0] A,
-	input [lv:0] B,
+	input [lv:0] X,
+	input [lv:0] Y,
 	input [lv:0] Cin,
 	input Selection, // 1 for addition, 0 to skip
 	output [lv:0] Sum,
@@ -43,7 +43,7 @@ genvar i;
 
 for (i = 0; i < l; i = i + 1)
 	ControlledAdder controlled_adder(
-		.A(A[i]), .B(B[i]), .Cin(Cin[i]),
+		.X(X[i]), .Y(Y[i]), .Cin(Cin[i]),
 		.Selection(Selection), .Sum(Sum[i]),
 		.Cout(Cout[i]) // This carry would go to the next ControlledFullAdder
 	);
@@ -60,8 +60,8 @@ endmodule //ControlledFullAdder
 // https://zipcpu.com/zipcpu/2021/07/03/slowmpy.html
 // https://github.com/SubZer0811/VLSI/blob/master/verilog/32bit-wallace-multiplier/wallace.v
 module Multiplication #(parameter l=16) (
-	input [lv:0] A,
-	input [lv:0] B,
+	input [lv:0] X,
+	input [lv:0] Y,
 	output [lv:0] R1,
 	output Overflow
 );
@@ -83,10 +83,10 @@ genvar i;
 for (i = 0; i < l; i = i + 1) begin
 	// We are adding A to 0 B times
 	ControlledFullAdder #(l-i) controlled_full_adder(
-		.A(Sum[i][lv:i]), // The previous sum (at index i)
-		.B(A[lv-i:0]),
+		.X(Sum[i][lv:i]), // The previous sum (at index i)
+		.Y( X[lv-i:0] ),
 		.Cin(Carry[i][lv-i:0]), // The previous carry (at index i)
-		.Selection(B[i]), // For each bit of B, we add currently shifted A only if that bit is 1
+		.Selection( Y[i] ), // For each bit of B, we add currently shifted A only if that bit is 1
 		
 		.Sum(Sum[i+1][lv:i]), // Current sum value (at index i+1)
 		.Cout(Carry[i+1][lv-i:0]) // Current carry value (at index i+1)
