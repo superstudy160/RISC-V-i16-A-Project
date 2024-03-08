@@ -64,7 +64,7 @@ ControlUnit #(l, op_l, p) control_unit(
 wire [lv:0] OutDataB;
 wire [lv:0] OutDataC;
 wire [lv:0] OldFlags;
-RegisterFile #(l, a) register_file(
+RegisterFile register_file(
 	.Clk(Clk),
 
 	.AddrA(Instruction[12:10]),

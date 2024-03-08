@@ -1,53 +1,53 @@
 `timescale 1ns / 1ps
-module RegisterFile #(parameter l=16, parameter a=3) (
+module RegisterFile (
 	input Clk,
 
-	input [av:0] AddrA,
-	input [av:0] AddrB,
-	input [av:0] AddrC,
+	input [2:0] AddrA,
+	input [2:0] AddrB,
+	input [2:0] AddrC,
 
-	input [lv:0] InDataA,
-	input [lv:0] InNewFlags,
+	input [15:0] InDataA,
+	input [15:0] InNewFlags,
 	input UpdateFlags,
 
-	output [lv:0] OutDataB,
-	output [lv:0] OutDataC,
-	output [lv:0] OutFlags,
+	output [15:0] OutDataB,
+	output [15:0] OutDataC,
+	output [15:0] OutFlags,
 
-	output [dv:0] DebugData
+	output [16 * 8 - 1:0] DebugData
 );
 
-	parameter av = a - 1; // Maximum address bit index
-  	parameter r = 1 << a; // Number of registers
-  	parameter rv = r - 1; // Maximum register index
-  	parameter lv = l - 1; // Maximum register bit index
-	parameter DebugDataWidth = l * r;
-	parameter dv = DebugDataWidth - 1; // Maximum debug data index
+	parameter FlagsAddress = 7;
 
-	parameter FlagsRegisterAddr = rv;
+	reg [15:0] Data [7:0];
 
-	reg [lv:0] Data [rv:0];
-
+	// Setting the initial values of the registers to be zero
 	integer j;
 	initial begin
-		for(j = 0; j < r; j = j + 1)
-			Data[j[av:0]] = 0;
+		for(j = 0; j < 8; j = j + 1)
+			Data[j[2:0]] = 0;
 	end
 
+	// Doing reading always
 	assign OutDataB = Data[AddrB];
 	assign OutDataC = Data[AddrC];
-	assign OutFlags = Data[FlagsRegisterAddr[av:0]];
+	assign OutFlags = Data[FlagsAddress[2:0]];
 
+	// We are doing writing only on posedge
 	always @ (posedge Clk) begin
+		// All instructions write to register A, so we always update it
 		Data[AddrA] = InDataA;
+
+		// Not always we update the flags, for that reason we write to it only if the UpdateFlags signal is set
 		if (UpdateFlags)
-			Data[FlagsRegisterAddr[av:0]] = InNewFlags;
+			Data[FlagsAddress[2:0]] = InNewFlags;
 	end
 
+	// We also always read from the registeres, to display their values in the testbench
 	generate
 		genvar i;
 		for (i = 0; i < r; i = i + 1) begin
-			assign DebugData[i * l +: l] = Data[i[av:0]];
+			assign DebugData[i * l +: l] = Data[i[2:0]];
 		end
 	endgenerate
 
