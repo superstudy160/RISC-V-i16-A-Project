@@ -46,8 +46,8 @@ module RegisterFile (
 	// We also always read from the registeres, to display their values in the testbench
 	generate
 		genvar i;
-		for (i = 0; i < r; i = i + 1) begin
-			assign DebugData[i * l +: l] = Data[i[2:0]];
+		for (i = 0; i < 8; i = i + 1) begin
+			assign DebugData[i * 16 +: 16] = Data[i[2:0]];
 		end
 	endgenerate
 
