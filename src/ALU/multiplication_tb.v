@@ -24,6 +24,14 @@ module Multiplication_Testbench ();
 		$dumpfile("wave.vcd");
 		$dumpvars(0, Multiplication_Testbench);
 		$monitor("X=%d,\nY=%d\nR1=%d, O=%b\n", X, Y, R1, Overflow);
+
+		// Checking all the cases of overflow :
+		// for (X = 0; X < 8; X = X + 1) begin
+		// 	for (Y = 0; Y < 8; Y = Y + 1) begin
+		// 		#10;
+		// 	end
+		// end
+
 		X = 16'd2;
 		Y = 16'd3;
 		#10;

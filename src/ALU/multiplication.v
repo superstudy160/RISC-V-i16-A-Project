@@ -74,8 +74,10 @@ assign Carry[0] = {l{1'b0}};
 wire [lv:0] Sum [l:0];
 assign Sum[0] = {l{1'b0}};
 
-wire [lv:0] carry_aggregate;
-assign carry_aggregate[0] = 0;
+wire [lv:0] OverflowPart; // Is true if at given point of time there is a part of shifted X that is sticking out
+assign OverflowPart[0] = 0;
+wire [lv:0] OverflowAggr; // Is true if at given point of time we already have an overflow
+assign OverflowAggr[0] = 0;
 
 generate
 genvar i;
@@ -94,12 +96,16 @@ for (i = 0; i < l; i = i + 1) begin
 	assign R1[i] = Sum[i+1][i]; // At this point, the last bit of the sum would never change afterwards
 								//   , thus can already be put in the output
 
-	if (i >= 1) // Checking if any of the carries are 1
-		assign carry_aggregate[i] = carry_aggregate[i-1] | Carry[i+1][lv-i];
+	// Here we are detecting whether there is an overflow
+	if (i >= 1) begin
+		assign OverflowPart[i] = OverflowPart[i-1] | X[lv-i+1]; // Sticking now = sticking before | started sticking now
+		assign OverflowAggr[i] = OverflowAggr[i-1] | OverflowPart[i] & Y[i] | Carry[i+1][lv-i];
+			// Overflowing now = Overflowing before | (Started sticking now & Included in sum) | Carry from this sum is present
+	end
 end
 endgenerate
 
-assign Overflow = carry_aggregate[lv];
+assign Overflow = OverflowAggr[lv];
 
 endmodule
 
