@@ -26,7 +26,7 @@ reg [lv:0] PC;
 wire [lv:0] NextPC;
 wire [lv:0] ignore_pc_incrementor;
 FullAdder #(l) pc_incrementor(
-	.A(PC), .B({l{1'b0}}),
+	.X(PC), .Y({l{1'b0}}),
 	.Cin(1'b1),
 
 	.S(NextPC),
@@ -89,14 +89,14 @@ wire [lv:0] ALUResult;
 wire [lv:0] ALUNewFlags;
 ALU #(l, p) alu(
 	.Operation(ALUOpcode),
-	.A(OutDataB),
-	.B(UseImmediate ? 
+	.B(OutDataB),
+	.C(UseImmediate ? 
 		{{10{Instruction[6]}}, Instruction[5:0]} :  // signed ImmediateExtend
 		OutDataC
 	),
 	.FlagsIn(OldFlags),
 
-	.R(ALUResult),
+	.Res(ALUResult),
 	.FlagsOut(ALUNewFlags)
 );
 	

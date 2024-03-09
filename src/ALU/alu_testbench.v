@@ -12,18 +12,18 @@ module ALU_Testbench ();
     parameter p = 0;
 
     reg [p:0] Operation;
-    reg signed [lv:0] A;
     reg signed [lv:0] B;
+    reg signed [lv:0] C;
     reg [lv:0] Flags;
     wire signed [lv:0] R;
     wire [lv:0] FlagsOut;
 
     ALU #(l, p) alu(
         .Operation(Operation),
-        .A(A), .B(B),
+        .B(B), .C(C),
         .FlagsIn(Flags),
 
-        .R(R),
+        .Res(R),
         .FlagsOut(FlagsOut)
     );
 
@@ -38,59 +38,59 @@ module ALU_Testbench ();
         Flags = 16'd0;
         #20;
 
-        $monitor("Operation=%d\nA=%d\nB=%d\nFlags=%b\nR=%d\n\n", Operation, A, B, Flags, R);
+        $monitor("Operation=%d\nB=%d\nC=%d\nFlags=%b\nR=%d\n\n", Operation, B, C, Flags, R);
         
         $display("Testing division:");
         Operation = 1'd0;
-        A = 16'sd6;
-        B = 16'sd3;
+        B = 16'sd6;
+        C = 16'sd3;
         #10;
 
         Operation = 1'd0;
-        A = 16'sd6;
-        B = 16'sd4;
+        B = 16'sd6;
+        C = 16'sd4;
         #10;
         
 
         Operation = 1'd0;
-        A = 16'sd6;
-        B = 16'sd0;
+        B = 16'sd6;
+        C = 16'sd0;
         #10;
 
         Operation = 1'd0;
-        A = -16'sd6;
-        B = -16'sd3;
+        B = -16'sd6;
+        C = -16'sd3;
         #10;
 
         Operation = 1'd0;
-        A = -16'sd6;
-        B = 16'sd3;
+        B = -16'sd6;
+        C = 16'sd3;
         #10;
 
         Operation = 1'd0;
-        A = -16'sd16;
-        B = -16'sd1;
+        B = -16'sd16;
+        C = -16'sd1;
         #10;
 
         $display("Testing multiplication:");
         Operation = 1'd1;
-        A = 16'sd2;
-        B = 16'sd3;
+        B = 16'sd2;
+        C = 16'sd3;
         #10;
 
         Operation = 1'd1;
-        A = 16'sd6;
         B = 16'sd6;
+        C = 16'sd6;
         #10;
 
         Operation = 1'd1;
-        A = -16'sd16;
-        B = 16'sd1;
+        B = -16'sd16;
+        C = 16'sd1;
         #10;
 
         Operation = 1'd1;
-        A = -16'sd16;
-        B = -16'sd1;
+        B = -16'sd16;
+        C = -16'sd1;
         #10;
     end
 endmodule
