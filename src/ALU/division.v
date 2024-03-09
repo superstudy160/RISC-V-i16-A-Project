@@ -1,36 +1,36 @@
 // https://www.geeksforgeeks.org/full-subtractor-in-digital-logic/
 module Subtractor(
-	input A, // Minuend
-	input B, // Subtrahend
+	input Min, // Minuend
+	input Subtr, // Subtrahend
 	input Bin, // Borrow in
-	output D, // Difference
+	output Diff, // Difference
 	output Bout // Borrow out
 );
 
-assign D = A ^ B ^ Bin;
-assign Bout = (~A & B) | ((~(A ^ B)) & Bin);
+assign Diff = Min ^ Subtr ^ Bin;
+assign Bout = (~Min & Subtr) | ((~(Min ^ Subtr)) & Bin);
 	
 endmodule //Subtractor
 
 
 // A - B
 module ControlledSubtractor(
-	input A, // Minuend
-	input B, // Subtrahend
+	input Min, // Minuend
+	input Subtr, // Subtrahend
 	input Bin, // Borrow in
 	input Selection, // 0 for subtraction, 1 to skip
-	output D, // Difference
+	output Diff, // Difference
 	output Bout // Borrow out
 );
 
-wire d_buff;
+wire diff_buff;
 
 Subtractor subtractor(
-	.A(A), .B(B), .Bin(Bin),
-	.D(d_buff), .Bout(Bout)
+	.Min(Min), .Subtr(Subtr), .Bin(Bin),
+	.Diff(diff_buff), .Bout(Bout)
 );
 
-assign D = Selection ? A : d_buff;
+assign Diff = Selection ? Min : diff_buff;
 
 endmodule //ControlledSubtractor
 
@@ -44,9 +44,9 @@ endmodule //ControlledSubtractor
 // https://en.algorithmica.org/hpc/arithmetic/division/
 // https://doc.lagout.org/security/Hackers%20Delight.pdf
 module FullControlledSubtractor #(parameter l=16) (
-	input [l:0] A, // Minuend (Last bit without substractend (needed for borrow))
-	input [lv:0] B, // Subtrahend
-	output [l:0] D, // Difference
+	input [l:0] Min, // Last bit without substractend (needed for borrow)
+	input [lv:0] Subtr,
+	output [l:0] Diff,
 	output Subtracted // 1 if the subtraction was done, 0 if it was skipped
 );
 
@@ -60,19 +60,19 @@ generate
 genvar i;
 
 for (i = 0; i <= l; i = i + 1) begin
-	wire b_buff;
-	if (i < l) assign b_buff = B[i];
-	else assign b_buff = 1'b0;
+	wire subtr_buff;
+	if (i < l) assign subtr_buff = Subtr[i];
+	else assign subtr_buff = 1'b0;
 
-	wire d_buff;
-	if (i < l) assign D[i] = d_buff;
+	wire diff_buff;
+	if (i < l) assign Diff[i] = diff_buff;
 
 	ControlledSubtractor subtractor(
-		.A(A[i]), .B(b_buff),
+		.Min(Min[i]), .Subtr(subtr_buff),
 		.Bin(Borrow[i]),
 		.Selection(~Subtracted),
 
-		.D(d_buff),
+		.Diff(diff_buff),
 		.Bout(Borrow[i+1])
 	);
 end
@@ -80,9 +80,10 @@ endgenerate
 endmodule //FullControlledSubtractor
 
 
+// Quotient = Min / Div
 module Division #(parameter l=16) (
-	input [lv:0] A,
-	input [lv:0] B,
+	input [lv:0] Min,
+	input [lv:0] Div,
 	output [lv:0] Quotient,
 	output HasRemainder,
 	output DivByZero
@@ -92,30 +93,24 @@ parameter lv = l-1;
 
 wire [lv:0] Difference [lv:0];
 assign HasRemainder = |Difference[lv];
-
-wire [l:0] is_zero;
-assign is_zero[0] = 1'b0;
+assign DivByZero = ~(|Div);
 
 generate
 genvar i;
 
 for (i = 0; i < l; i = i + 1) begin
-	wire [l:0] a_buff;
-	assign a_buff[0] = A[lv-i];
-	if (i > 0) assign a_buff[l:1] = Difference[i-1];
-	else assign a_buff[l:1] = {l{1'b0}};
+	wire [l:0] min_buff;
+	assign min_buff[0] = Min[lv-i];
+	if (i > 0) assign min_buff[l:1] = Difference[i-1];
+	else assign min_buff[l:1] = {l{1'b0}};
 
 	wire ignore;
 	FullControlledSubtractor #(l) subtractor(
-		.A(a_buff), .B(B),
-		.D({ignore, Difference[i]}),
+		.Min(min_buff), .Subtr(Div),
+		.Diff({ignore, Difference[i]}),
 		.Subtracted(Quotient[lv-i])
 	);
 end
-
-for (i = 0; i < l; i = i + 1)
-	assign is_zero[i+1] = is_zero[i] | B[i];
-assign DivByZero = ~is_zero[l];
 
 endgenerate
 endmodule //Division
