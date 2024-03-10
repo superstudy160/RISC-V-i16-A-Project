@@ -1,0 +1,15 @@
+\section{Introduction}
+In our project, we investigate how a 16-bit RISK-V architecture works.
+We explore how simple arithmetic operations like multiplication and division are performed, their synthesis in combinatorial logic, and how other parts of the processor interact with each other.
+We have done work to adjust the default structure of the RISK-V processor so that it matches the given specifications.
+This report will give the reader a better understanding and an overview of RISK-V architecture.
+The source code to the Verilog implementation of it and its test benches can be found online\footnote{At \url{https://github.com/superstudy160/HDL-RISC-V-i16-A-Project/}.}.
+
+\subsection{Notation and terminology}
+
+\begin{itemize}
+    \setlength\itemsep{3pt}
+    \item $R_i$ -- the $i$-th register of the processor;
+    \item \codeword{MonoFont} -- the indication of a code snippet, parameter name of a keyword;
+    \item \codeword{l} and \codeword{lv} -- parameters used throughout our code to specify the bitness of the parameters. By default, \codeword{l} = 16 (given that we are working with a 16-bit processor), and \codeword{lv} = 15 (the highest bit index of a 16-bit number). But we can decrease them for the testing purposes.
+\end{itemize}

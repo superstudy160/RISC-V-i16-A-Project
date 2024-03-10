@@ -1,0 +1,79 @@
+% This file contains configuration of the listings package, which is used to for the code
+\usepackage{listings}
+\usepackage{fontspec}
+\usepackage{xcolor}
+
+\lstdefinestyle{mystyle}{
+    basicstyle=\fontsize{7.5}{10}\selectfont\ttfamily,
+    captionpos=b,                    
+}
+\lstdefinestyle{mystyle1}{
+    basicstyle=\fontsize{5.5}{10}\selectfont\ttfamily,
+    captionpos=b,                    
+}
+
+% https://tex.stackexchange.com/a/377226
+\definecolor{vgreen}{RGB}{104,180,104}
+\definecolor{vblue}{RGB}{49,49,255}
+\definecolor{vorange}{RGB}{255,143,102}
+\definecolor{mygray}{RGB}{148,148,148}
+
+\makeatletter
+% \renewcommand*\verbatim@nolig@list{}
+\newcommand*\@lbracket{[}
+\newcommand*\@rbracket{]}
+\newcommand*\@colon{:}
+\newcommand*\colorIndex{%
+    \edef\@temp{\the\lst@token}%
+    \ifx\@temp\@lbracket \color{black}%
+    \else\ifx\@temp\@rbracket \color{black}%
+    \else\ifx\@temp\@colon \color{black}%
+    \else \color{vorange}%
+    \fi\fi\fi
+}
+\makeatother
+
+\lstdefinestyle{verilog}
+{
+    language=Verilog,
+    basicstyle=\fontsize{6}{8}\selectfont\ttfamily,
+    keywordstyle=\color{vblue},
+    identifierstyle=\color{black},
+    commentstyle=\color{vgreen},
+    numbers=left,
+    numberstyle=\tiny\color{mygray},
+    tabsize=4,
+    breaklines=true,
+    moredelim=*[s][\colorIndex]{[}{]},
+    literate=*{:}{:}1,
+    frame=single,
+    % xrightmargin=1em,
+    xleftmargin=1.5em, % https://tex.stackexchange.com/a/22372
+    framexleftmargin=1.5em,
+    numbersep=3pt
+}
+
+% Setting up the font
+% https://tex.stackexchange.com/a/548156
+\setmonofont{JetBrains Mono}[
+    Contextuals = Alternate,
+    Ligatures = TeX,
+]
+\lstset{
+    basicstyle = \ttfamily,
+    columns = flexible,
+}
+
+% https://tex.stackexchange.com/a/60870
+\lstnewenvironment{code}[2][1]
+{
+    \lstset{
+        language=verilog,
+        style=verilog,
+        numbers=left,
+        caption=#2,
+        firstnumber=#1 %https://tex.stackexchange.com/a/398628
+    }
+} {}
+
+\newcommand{\codeword}[1]{\texttt{\footnotesize{#1}}}

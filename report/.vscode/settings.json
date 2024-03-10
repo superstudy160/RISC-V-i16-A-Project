@@ -1,0 +1,8 @@
+{
+    "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/out/",
+    "files.autoSave": "onWindowChange",
+    "latex-workshop.latex.recipe.default": "lastUsed",
+    "cSpell.words": [
+        "riscv"
+    ]
+}

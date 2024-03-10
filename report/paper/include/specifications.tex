@@ -1,0 +1,23 @@
+\section{Specifications}
+We implemented a RISC-V module that consists of Instruction Memory, Control Unit, Register File (16-bit register length, 8 registers in total), and ALU. The usual Data Memory is removed, and results go back to the Register File, but the order and concrete Instructions themselves are hardcoded in the Instruction Memory module.
+
+An Instruction is 16-bits long and can be understood in three different ways, depending on the operation we want to perform. Following Little Endian, bits [15:13] always stand for the opcode, and the next [12:10] bits represent the address of Register where the result of the operation will be stored. Then, for RRR-operation, bits [9:7] and [2:0] represent addresses of registers to fetch the data from. For RRI-operation, bits [9:7] are set for the register address, and the last [7:0] bits represent the immediate signed value. For LUI operation, we only need the resulting register and the immediate value to put to this register, so all [9:0] bits represent this value.
+
+Program Counter is implemented and connected to the Instruction Memory where, depending on its value, it chooses a pre-coded instruction. The processor is able to perform multiplication (16-bit, RRR and RRI), division (16-bit, RRR and RRI), and load values to Registers. Everything is happening in a single cycle: the instruction is fetched from the Instruction Memory, the Control Unit receives an opcode and sends corresponding signals, ALU executes the instruction, and results come back to the Register File.
+
+Processor implementation is also extended by creating a Flag Register which is not updated every Clock Cycle (Control Unit sends a special UpdateFlags signal if something needs to be written to Flag Register). 
+\begin{table}[h] % Place the table here, or use other options like [htbp]
+    \centering
+    \caption{Flags Register reference}
+    \label{tab:flags}
+    \begin{tabular}{ccc} % Define the number of columns and their alignment
+        \toprule % Top horizontal line
+        index & Description  \\
+        \midrule % Horizontal line
+        0 & Multiplication overflow \\
+        1 & Division has remainder \\
+        2 & Division by zero \\
+        3 & Division overflow ($-2^{(16-1)} \cdot -1$) \\
+        \bottomrule % Bottom horizontal line
+    \end{tabular}
+\end{table}

@@ -1,0 +1,11 @@
+\section{RISC-V module}
+We have explored how each module of the processor is implemented, and in this part of the report, we will show how they interact with each other. The design of the module is shown in Figure \ref{fig:riscv}.
+
+\subsection{RISC-V execution flow}
+Every new clock cycle, the Program Counter (PC) is increased by 2, which leads to the new Instruction being fetched from the Instruction memory.
+
+Next, the bits [15:13] of the Instruction are loaded into the Control Unit as the Opcode. If the Opcode corresponds to LUI operation, then \codeword{LoadUpperImmediate} output would be set to 1 and \codeword{UpdateFlags} to 0. This would lead to the MUX controlling the Register File input, sending the data from ImmediateExtend, and the Register File not accepting the NewFlags from ALU.
+
+Otherwise, the value sent to the Register File would result from ALU execution.
+
+No flags are updated as the UpdateFlags signal was set to 0. If the Control Unit received the opcode that indicates an arithmetical operation, other bits of the Instruction will be understood as addresses of registers that the Register File will load to wires going to the ALU. If the OR gate receives the UseImmediate signal from the Control Unit, then instead of register C, the immediate value from signed ImmediateExtend will be put to the wire going to the ALU. Now, the ALU execution result is returned back to the Register File, and if no LoadUpperImmediate signal was received, the result goes to the Register, which address was specified in the Instruction. Also, with the result, New Flags are sent, and in case of an arithmetic operation, they are updated when the Register File receives the UpdateFlags signal. Finally, the new Clock cycle begins, the Program Counter is increased, and the whole cycle repeats again.
