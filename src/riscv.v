@@ -26,8 +26,8 @@ reg [lv:0] PC;
 wire [lv:0] NextPC;
 wire [lv:0] ignore_pc_incrementor;
 FullAdder #(l) pc_incrementor(
-	.X(PC), .Y({l{1'b0}}),
-	.Cin(1'b1),
+	.X(PC), .Y({{l-2{1'b0}}, 2'b10}),
+	.Cin(1'b0),
 
 	.S(NextPC),
 	.Cout(ignore_pc_incrementor)

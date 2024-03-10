@@ -6,7 +6,7 @@ module InstructionMemory #(parameter l = 16)(
 parameter lv = l-1;
 
 always @(Address) begin
-	case (Address)
+	case (Address[lv:1])
 		// This is the contents of the instruction memory
 		00: Instruction = { 3'b011, 3'b000, 10'sd2 };
 		01: Instruction = { 3'b011, 3'b001, 10'sd3 };
@@ -14,7 +14,7 @@ always @(Address) begin
 		03: Instruction = { 3'b010, 3'b011, 3'b010, -7'sd4 };
 
 		// Output zero for all other addresses
-		default: Instruction = 16'b0;
+		default: Instruction = { 3'b001, 3'b000, 3'b000, 7'sd1 };
 	endcase
 end
 	
