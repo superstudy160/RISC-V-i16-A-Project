@@ -11,7 +11,7 @@ module ALU #(parameter l=16, parameter p=0) (
 parameter lv = l-1;
 assign FlagsIn = {lv{1'b0}};
 
-parameter lv = l-1;
+
 parameter MultiplicationOverflowIdx = 0;
 parameter DivisionHasRemainderIdx = 1;
 parameter DivisionByZeroIdx = 2;

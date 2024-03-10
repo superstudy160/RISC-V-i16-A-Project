@@ -4,6 +4,7 @@ module Division_Testbench ();
 
 	reg [15:0] a, b;
 	wire [15:0] quotient, remainder;
+	wire hasRemainder;
 	wire DivByZero;
 
 	Division #(16) uut (
@@ -15,7 +16,7 @@ module Division_Testbench ();
 	);
 	
 	initial begin
-		$monitor("a=%d\nb=%d\nq=%d, r=%d, z=%b\n\n", a, b, quotient, remainder, DivByZero);
+		$monitor("a=%d\nb=%d\nq=%d, r=%d, z=%b\n\n", a, b, quotient, remainder,hasRemainder, DivByZero);
 		a = 16'd0;
 		b = 16'd0;
 		#10;

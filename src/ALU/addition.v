@@ -47,24 +47,4 @@ In signed arithmetic, watch the overflow flag to detect errors.
 In signed arithmetic, the carry flag tells you nothing interesting.
 */
 // This addition algorithm works both for signed and unsigned numbers (2's complement)
-module FullAdderFlags #(parameter l = 16) (
-	input [lv:0] A,
-	input [lv:0] B,
-	output [lv:0] S,
-	output Overflow,
-	output Carry
-);
-
-parameter lv = l-1;
-
-wire [lv:0] Cout;
-
-FullAdder #(l) full_adder (
-	.A(A), .B(B), .Cin(1'b0),
-	.S(S), .Cout(Cout)
-);
-
-assign Overflow = Cout[lv-1] ^ Cout[lv]; // this code works somehow, at least the possibilities I have tested
-assign Carry = Cout[lv];
-
-endmodule // FullAdderFlags
+ 
