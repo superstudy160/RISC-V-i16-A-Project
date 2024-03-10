@@ -27,8 +27,7 @@ assign Cout_temp[0] = Cin;
 
 // Remaining bits
 generate genvar i;
-	//                                     |-> Why you do this?
-	for (i = 0; i <= lv; i = i + 1) begin : gen_adders
+	for (i = 0; i <= lv; i = i + 1) begin
 		Adder adder(X[i], Y[i], Cout_temp[i], Sum[i], Cout_temp[i+1]);
 	end
 endgenerate
@@ -64,7 +63,7 @@ FullAdder #(l) full_adder (
 	.S(S), .Cout(Cout)
 );
 
-assign Overflow = Cout[lv-1] ^ Cout[lv]; // this code works somehow, at least the possibilities I have tested
+assign Overflow = Cout[lv-1] ^ Cout[lv];
 assign Carry = Cout[lv];
 
 endmodule // FullAdderFlags
