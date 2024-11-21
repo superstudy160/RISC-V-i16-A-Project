@@ -9,6 +9,7 @@
 |`0`|Multiplication overflow|
 |`1`|Division has remainder|
 |`2`|Division by zero|
+|`3`|Division overflow (when dividing by -1 to get higher result)|
 
 ## [Instruction bits reference](https://user.eng.umd.edu/~blj/risc/RiSC-isa.pdf)
 

@@ -2,38 +2,38 @@
 
 module Division_Testbench ();
 
-	reg [15:0] a, b;
-	wire [15:0] quotient, remainder;
-	wire hasRemainder;
+	reg [15:0] min, div;
+	wire [15:0] quotient;
+	wire HasRemainder;
 	wire DivByZero;
 
 	Division #(16) uut (
-		.A(a), 
-		.B(b),
+		.Min(min), 
+		.Div(div),
 		.Quotient(quotient),
-		.Remainder(remainder),
+		.HasRemainder(HasRemainder),
 		.DivByZero(DivByZero)
 	);
 	
 	initial begin
-		$monitor("a=%d\nb=%d\nq=%d, r=%d, z=%b\n\n", a, b, quotient, remainder,hasRemainder, DivByZero);
-		a = 16'd0;
-		b = 16'd0;
+		$monitor("min=%d\ndiv=%d\nq=%d, r=%b, z=%b\n\n", min, div, quotient, HasRemainder, DivByZero);
+		min = 16'd0;
+		div = 16'd0;
 		#10;
-		a = 16'd7;
-		b = 16'd0;
+		min = 16'd7;
+		div = 16'd0;
 		#10;
-		a = 16'd5;
-		b = 16'd2;
+		min = 16'd5;
+		div = 16'd2;
 		#10;
-		a = 16'd18;
-		b = 16'd3;
+		min = 16'd18;
+		div = 16'd3;
 		#10;
-		a = 16'd18;
-		b = 16'd4;
+		min = 16'd18;
+		div = 16'd4;
 		#10;
-		a = 16'd18;
-		b = 16'd5;
+		min = 16'd18;
+		div = 16'd5;
 		#10;
 	end
 endmodule
