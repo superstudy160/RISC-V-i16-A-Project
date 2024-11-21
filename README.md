@@ -2,6 +2,25 @@
 
 ![](./materials/diagram/diagram.svg)
 
+# Structure of the repository
+* The source code can be found in [`src`](./src) folder;
+* The source code of the report is located at [`report`](./report) folder;
+
+# Running guide
+To start the RISC-V module on the testing instruction set, run the following:
+```shell
+iverilog -o main ./src/riscv_testbench.v; ./main
+```
+If you want to change the instructions to be executed, you will have to modify the contents of the Instruction Memory module, that is located at [`src/InstructionMemory/instruction_memory.v`](./src/InstructionMemory/instruction_memory.v).
+
+The default instruction sequence is provided in the following table:
+||Binary code|Meaning|
+|-|-|-|
+|0|{ 3'b`011`, 3'b`000`, 10'sd`2` }|`LUI R0, 2`|
+|1|{ 3'b`011`, 3'b`001`, 10'sd`3` }|`LUI R1, 3`|
+|2|{ 3'b`111`, 3'b`010`, 3'b`000`, 4'b0, 3'b`001` }|`MUL R2, R0, R1`|
+|3|{ 3'b`010`, 3'b`011`, 3'b`010`, `-`7'sd`4` }|`DIVi R3, R2, -4`|
+
 # Architecture reference
 ## `Flags` register reference
 |Index|Description|
@@ -12,7 +31,6 @@
 |`3`|Division overflow (when dividing by -1 to get higher result)|
 
 ## [Instruction bits reference](https://user.eng.umd.edu/~blj/risc/RiSC-isa.pdf)
-
 
 # Useful stuff
 
