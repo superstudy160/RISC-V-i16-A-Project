@@ -1,5 +1,7 @@
 # HDL-RISC-V-i16-A-Project
 
+### [Submission Paper](./rv-16i-a_g6.pdf)
+
 ![](./materials/diagram/diagram.svg)
 
 # Structure of the repository
